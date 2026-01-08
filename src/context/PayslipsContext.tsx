@@ -7,6 +7,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import type { Payslip, SortOption, PayslipFilters } from '../types/payslip';
+import { mockPayslips } from '../data/mockPayslips';
 
 interface PayslipsContextType {
   payslips: Payslip[];
@@ -22,13 +23,39 @@ const PayslipsContext = createContext<PayslipsContextType | undefined>(
 );
 
 export function PayslipsProvider({ children }: { children: React.ReactNode }) {
-  const [payslips] = useState<Payslip[]>([]); // TODO: Initialize with mock data
+  const [payslips] = useState<Payslip[]>(mockPayslips);
   const [sortOption, setSortOption] = useState<SortOption>('most-recent');
   const [filters, setFilters] = useState<PayslipFilters>({});
 
   const getFilteredAndSortedPayslips = useCallback((): Payslip[] => {
-    // TODO: Implement filtering and sorting logic
-    return payslips;
+    let result = [...payslips];
+
+    if (filters.year) {
+      result = result.filter((payslip) => {
+        return new Date(payslip.fromDate).getFullYear() === filters.year
+      });
+    }
+
+    if (filters.searchText) {
+      const searchLower = filters.searchText.toLowerCase()
+      result = result.filter((payslip) => {
+        const dateRange = `${payslip.fromDate} ${payslip.toDate}`;
+        return dateRange.toLowerCase().includes(searchLower)
+      })
+    }
+
+    result.sort((a, b) => {
+      const dateA = new Date(a.fromDate).getTime();
+      const dateB = new Date(b.fromDate).getTime();
+
+      if (sortOption === 'most-recent') {
+        return dateB - dateA
+      } else {
+        return dateA - dateB
+      }
+    });
+
+    return result;
   }, [payslips, sortOption, filters]);
 
   const value: PayslipsContextType = {
