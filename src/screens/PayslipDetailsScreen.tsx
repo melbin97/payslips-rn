@@ -18,68 +18,68 @@ type Props = NativeStackScreenProps<RootStackParamList, 'PayslipDetails'>;
 export default function PayslipDetailsScreen({ route }: Props) {
   const { payslip } = route.params;
   const [isDownloading, setIsDownloading] = useState(false);
-  
+
   const dateRange = formatDateRange(payslip.fromDate, payslip.toDate);
 
   const handleDownload = async () => {
-  setIsDownloading(true);
-  try {
-    const filePath = await downloadPayslip(
-      payslip.id,
-      payslip.file.uri,
-      payslip.file.type
-    );
-    
-    Alert.alert(
-      'Success',
-      `Payslip saved to: ${filePath}`,
-      [{ text: 'OK' }]
-    );
-  } catch (error) {
-    Alert.alert(
-      'Download Failed',
-      error instanceof Error ? error.message : 'Unable to download payslip. Please try again.',
-      [{ text: 'OK' }]
-    );
-  } finally {
-    setIsDownloading(false);
-  }
-};
+    setIsDownloading(true);
+    try {
+      const filePath = await downloadPayslip(
+        payslip.id,
+        payslip.file.uri,
+        payslip.file.type
+      );
 
-return (
-  <View style={styles.container}>
-    <View style={styles.content}>
-      <View style={styles.section}>
-        <Text style={styles.label}>Payslip ID</Text>
-        <Text style={styles.value}>{payslip.id}</Text>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.label}>Period</Text>
-        <Text style={styles.value}>{dateRange}</Text>
-      </View>
-      
-      <View style={styles.section}>
-        <Text style={styles.label}>File Type</Text>
-        <View style={styles.fileTypeContainer}>
-          <Text style={styles.fileTypeText}>{payslip.file.type.toUpperCase()}</Text>
+      Alert.alert(
+        'Success',
+        `Payslip saved to: ${filePath}`,
+        [{ text: 'OK' }]
+      );
+    } catch (error) {
+      Alert.alert(
+        'Download Failed',
+        error instanceof Error ? error.message : 'Unable to download payslip. Please try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.section}>
+          <Text style={styles.label}>Payslip ID</Text>
+          <Text style={styles.value}>{payslip.id}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.label}>Period</Text>
+          <Text style={styles.value}>{dateRange}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.label}>File Type</Text>
+          <View style={styles.fileTypeContainer}>
+            <Text style={styles.fileTypeText}>{payslip.file.type.toUpperCase()}</Text>
+          </View>
         </View>
       </View>
+
+      <View style={styles.actions}>
+        <TouchableOpacity
+          style={[styles.button, styles.downloadButton, isDownloading && styles.buttonDisabled]}
+          onPress={handleDownload}
+          disabled={isDownloading}
+          accessibilityLabel="Download payslip">
+          <Text style={styles.buttonText}>
+            {isDownloading ? 'Downloading...' : 'Download Payslip'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
-    
-    <View style={styles.actions}>
-      <TouchableOpacity
-        style={[styles.button, styles.downloadButton, isDownloading && styles.buttonDisabled]}
-        onPress={handleDownload}
-        disabled={isDownloading}
-        accessibilityLabel="Download payslip">
-        <Text style={styles.buttonText}>
-          {isDownloading ? 'Downloading...' : 'Download Payslip'}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  </View>
-);
+  );
 }
 
 const styles = StyleSheet.create({
