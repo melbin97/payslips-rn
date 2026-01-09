@@ -1,97 +1,204 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Payslips App
 
-# Getting Started
+A React Native application for managing and viewing payslips. Built with TypeScript, featuring native file handling, clean architecture, and a polished mobile UX.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Features
 
-## Step 1: Start Metro
+- **Payslip List** - Scrollable list of payslips with sorting and search
+- **Payslip Details** - View payslip information
+- **Download** - Save payslips to device storage
+- **Preview** - Open payslips with system PDF viewer
+- **Search** - Filter payslips by date range or ID
+- **Sorting** - Sort by most recent or oldest first
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Tech Stack
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+### Core
+- **React Native CLI** (0.83.1) - Native mobile development
+- **TypeScript** (5.8.3) - Type safety and better developer experience
+- **React** (19.2.0) - UI framework
 
-```sh
-# Using npm
-npm start
+### Navigation
+- **@react-navigation/native** (^7.1.26) - Navigation library
+- **@react-navigation/native-stack** (^7.9.0) - Stack navigator
+- **react-native-screens** (^4.19.0) - Native screen components
 
-# OR using Yarn
-yarn start
+### File Handling
+- **react-native-fs** (^2.20.0) - File system operations
+- **react-native-file-viewer** (^2.1.5) - PDF preview functionality
+
+### State Management
+- **React Context API** - Lightweight state management for mock data
+
+### Testing
+- **Jest** (^29.6.3) - Testing framework
+- **react-test-renderer** (^19.2.0) - Component testing
+
+## Architecture
+
+The app follows a clean architecture pattern:
+
+```
+src/
+├── types/          # TypeScript type definitions
+├── data/           # Mock data
+├── context/        # State management (React Context)
+├── screens/        # Screen components
+├── components/     # Reusable UI components
+├── navigation/     # Navigation setup
+├── utils/          # Utility functions (date formatting, file handling)
+└── theme/          # Design tokens (colors, spacing)
 ```
 
-## Step 2: Build and run your app
+## Prerequisites
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+- **Node.js** >= 20
+- **React Native development environment** set up
+  - For iOS: Xcode and CocoaPods
+  - For Android: Android Studio and Android SDK
+- See [React Native Environment Setup](https://reactnative.dev/docs/set-up-your-environment) for details
 
-### Android
+## Getting Started
+
+### 1. Install Dependencies
 
 ```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+npm install
 ```
 
-### iOS
+### 2. iOS Setup
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+Install CocoaPods dependencies:
 
 ```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
+cd ios
 bundle exec pod install
+cd ..
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+### 3. Start Metro Bundler
 
 ```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+npm start
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+### 4. Run the App
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+#### Android
 
-## Step 3: Modify your app
+```sh
+npm run android
+```
 
-Now that you have successfully run the app, let's make changes!
+**Note:** Ensure you have:
+- Android emulator running, OR
+- Physical device connected with USB debugging enabled
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+#### iOS
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+```sh
+npm run ios
+```
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+**Note:** Ensure you have:
+- iOS Simulator available, OR
+- Physical device connected (requires Apple Developer account)
 
-## Congratulations! :tada:
+## Project Setup Details
 
-You've successfully run and modified your React Native App. :partying_face:
+### Native Assets
 
-### Now what?
+The app requires a sample PDF file in native assets:
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+**Android:**
+- Place `sample.pdf` in: `android/app/src/main/assets/payslips/sample.pdf`
 
-# Troubleshooting
+**iOS:**
+- Add `sample.pdf` to Xcode project
+- Ensure it's included in "Copy Bundle Resources" in Build Phases
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+### Running Tests
 
-# Learn More
+```sh
+npm test
+```
 
-To learn more about React Native, take a look at the following resources:
+## Known Limitations
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+1. **PDF Viewer Dependency** - On Android, preview requires a PDF viewer app to be installed. The app will show a helpful error message if no viewer is found.
+
+2. **File Storage Location** - Files are saved to app-private storage (`DocumentDirectoryPath`), not user-accessible locations like Downloads folder. This was chosen to avoid complex permission handling.
+
+3. **Mock Data Only** - The app uses in-memory mock data. No API integration or persistent storage beyond downloaded files.
+
+4. **Single PDF File** - All payslips reference the same bundled PDF file. In a production app, each payslip would have its own file.
+
+5. **Filter UI** - Search functionality is implemented, but year filter UI is not included (filtering logic exists in context).
+
+## What I Would Improve With More Time
+
+1. **Enhanced File Management**
+   - Save to user-accessible Downloads folder (with proper Android permissions)
+   - File sharing capabilities
+   - File management screen to view downloaded payslips
+
+2. **Better Error Handling**
+   - Retry mechanisms for failed downloads
+   - Offline state handling
+   - More detailed error messages
+
+3. **UI/UX Enhancements**
+   - Pull-to-refresh functionality
+   - Loading skeletons instead of blank screens
+   - Animations and transitions
+   - Dark mode support
+   - Year filter UI component
+
+4. **Testing**
+   - More comprehensive component tests
+   - Integration tests for file operations
+   - E2E tests for critical user flows
+
+5. **Performance**
+   - Image caching if image support is added
+   - Optimized re-renders with React.memo
+
+6. **Accessibility**
+   - Screen reader testing and improvements
+   - Keyboard navigation enhancements
+   - High contrast mode support
+
+7. **Production Features**
+   - API integration for real payslip data
+   - Authentication and user management
+   - Secure file storage
+   - Push notifications for new payslips
+
+## Library Choices & Trade-offs
+
+### React Native CLI vs Expo
+**Choice:** React Native CLI  
+**Reason:** More control over native code and less boilerplate code compared to expo.
+
+### Context API vs Redux
+**Choice:** React Context API  
+**Reason:** Sufficient for mock data and simple state. Redux would be overkill for this scope. Easy to migrate to Redux if needed.
+
+### react-native-fs
+**Choice:** react-native-fs  
+**Reason:** Well-maintained, comprehensive file system API, good documentation, and works reliably on both platforms.
+
+### react-native-file-viewer
+**Choice:** react-native-file-viewer  
+**Reason:** Simple API, handles PDF viewing on both platforms, good error handling.
+
+## Troubleshooting
+
+### Android: "No app associated with this mime type"
+Install a PDF viewer app from the Play Store (e.g., Adobe Acrobat Reader, Google PDF Viewer).
+
+### iOS: Build fails after adding dependencies
+Run `cd ios && pod install && cd ..` to update CocoaPods dependencies.
+
+### Tests fail with module errors
+Ensure `jest.setup.js` exists and mocks are properly configured. Run `npm test` to verify.
