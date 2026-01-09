@@ -3,7 +3,6 @@
  * Used for type-safe navigation in React Navigation
  */
 
-import type { NavigatorScreenParams } from '@react-navigation/native';
 import type { Payslip } from '../types/payslip';
 
 export type RootStackParamList = {

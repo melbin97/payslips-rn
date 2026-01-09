@@ -1,3 +1,4 @@
+/* eslint-env jest */
 // Mock react-native-fs
 jest.mock('react-native-fs', () => ({
   DocumentDirectoryPath: '/mock/documents',
