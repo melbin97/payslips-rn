@@ -1,8 +1,6 @@
 /**
  * Payslips Context
  * Provides payslip data and state management throughout the app
- * 
- * TODO: Implement context with mock data and state management
  */
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
