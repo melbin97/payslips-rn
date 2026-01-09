@@ -11,13 +11,14 @@ import type { RootStackParamList } from '../navigation/types';
 import { spacing } from '../theme/spacing';
 import { colors } from '../theme/colors';
 import { formatDateRange } from '../utils/dateFormatter';
-import { downloadPayslip } from '../utils/fileHandler';
+import { downloadPayslip, openPayslip } from '../utils/fileHandler';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PayslipDetails'>;
 
 export default function PayslipDetailsScreen({ route }: Props) {
   const { payslip } = route.params;
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isPreviewing, setIsPreviewing] = useState(false);
 
   const dateRange = formatDateRange(payslip.fromDate, payslip.toDate);
 
@@ -26,8 +27,7 @@ export default function PayslipDetailsScreen({ route }: Props) {
     try {
       const filePath = await downloadPayslip(
         payslip.id,
-        payslip.file.uri,
-        payslip.file.type
+        payslip.file
       );
 
       Alert.alert(
@@ -43,6 +43,28 @@ export default function PayslipDetailsScreen({ route }: Props) {
       );
     } finally {
       setIsDownloading(false);
+    }
+  };
+
+  const handlePreview = async () => {
+    setIsPreviewing(true);
+    try {
+      // First, ensure the file is downloaded
+      const filePath = await downloadPayslip(
+        payslip.id,
+        payslip.file
+      );
+
+      // Then open it
+      await openPayslip(filePath);
+    } catch (error) {
+      Alert.alert(
+        'Preview Failed',
+        error instanceof Error ? error.message : 'Unable to preview payslip. Please try again.',
+        [{ text: 'OK' }]
+      );
+    } finally {
+      setIsPreviewing(false);
     }
   };
 
@@ -68,6 +90,15 @@ export default function PayslipDetailsScreen({ route }: Props) {
       </View>
 
       <View style={styles.actions}>
+        <TouchableOpacity
+          style={[styles.button, styles.secondaryButton, isPreviewing && styles.buttonDisabled]}
+          onPress={handlePreview}
+          disabled={isPreviewing || isDownloading}
+          accessibilityLabel="Preview payslip">
+          <Text style={styles.secondaryButtonText}>
+            {isPreviewing ? 'Opening...' : 'Preview Payslip'}
+          </Text>
+        </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.downloadButton, isDownloading && styles.buttonDisabled]}
           onPress={handleDownload}
@@ -138,6 +169,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: colors.background,
+  },
+  secondaryButton: {
+    backgroundColor: colors.background,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    marginBottom: spacing.sm,
+  },
+  secondaryButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.primary,
   },
 });
 

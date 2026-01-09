@@ -3,30 +3,20 @@
  * Each payslip represents a payment period with associated file
  */
 
-export type FileType = 'pdf' | 'image';
+export type FileType = 'pdf';
 
 export interface PayslipFile {
-  uri: string; // Path to bundled asset (require('./assets/payslips/sample.pdf'))
   type: FileType;
+
+  // Native-bundled locations (used for download/copy)
+  iosBundleName: string;       // e.g. "sample.pdf" (must be in Copy Bundle Resources)
+  androidAssetPath: string;    // e.g. "payslips/sample.pdf" (android/app/src/main/assets)
+
 }
 
 export interface Payslip {
   id: string;
-  fromDate: string; // ISO format: "2024-01-01"
-  toDate: string;   // ISO format: "2024-01-31"
+  fromDate: string;
+  toDate: string;
   file: PayslipFile;
 }
-
-/**
- * Sort options for payslip list
- */
-export type SortOption = 'most-recent' | 'oldest-first';
-
-/**
- * Filter options for payslip list
- */
-export interface PayslipFilters {
-  year?: number;
-  searchText?: string;
-}
-
