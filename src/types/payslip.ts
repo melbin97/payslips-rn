@@ -20,3 +20,19 @@ export interface Payslip {
   toDate: string;
   file: PayslipFile;
 }
+
+/**
+ * Sort options for payslip list
+ */
+export enum SortOption {
+  MostRecent = 'most-recent',
+  OldestFirst = 'oldest-first',
+}
+
+/**
+ * Filter options for payslip list
+ */
+export interface PayslipFilters {
+  year?: number;
+  searchText?: string;
+}

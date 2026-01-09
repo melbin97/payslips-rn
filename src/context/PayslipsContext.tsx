@@ -6,8 +6,9 @@
  */
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import type { Payslip, SortOption, PayslipFilters } from '../types/payslip';
+import { SortOption, type Payslip, type PayslipFilters } from '../types/payslip';
 import { mockPayslips } from '../data/mockPayslips';
+import { formatDateRange } from '../utils/dateFormatter';
 
 interface PayslipsContextType {
   payslips: Payslip[];
@@ -24,7 +25,7 @@ const PayslipsContext = createContext<PayslipsContextType | undefined>(
 
 export function PayslipsProvider({ children }: { children: React.ReactNode }) {
   const [payslips] = useState<Payslip[]>(mockPayslips);
-  const [sortOption, setSortOption] = useState<SortOption>('most-recent');
+  const [sortOption, setSortOption] = useState<SortOption>(SortOption.MostRecent);
   const [filters, setFilters] = useState<PayslipFilters>({});
 
   const getFilteredAndSortedPayslips = useCallback((): Payslip[] => {
@@ -37,18 +38,34 @@ export function PayslipsProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (filters.searchText) {
-      const searchLower = filters.searchText.toLowerCase()
+      const searchLower = filters.searchText.toLowerCase();
       result = result.filter((payslip) => {
-        const dateRange = `${payslip.fromDate} ${payslip.toDate}`;
-        return dateRange.toLowerCase().includes(searchLower)
-      })
+        // Search in payslip ID
+        if (payslip.id.toLowerCase().includes(searchLower)) {
+          return true;
+        }
+        
+        // Search in formatted date range (what user sees)
+        const formattedDateRange = formatDateRange(payslip.fromDate, payslip.toDate);
+        if (formattedDateRange.toLowerCase().includes(searchLower)) {
+          return true;
+        }
+        
+        // Search in raw dates (ISO format)
+        const rawDates = `${payslip.fromDate} ${payslip.toDate}`;
+        if (rawDates.toLowerCase().includes(searchLower)) {
+          return true;
+        }
+        
+        return false;
+      });
     }
 
     result.sort((a, b) => {
       const dateA = new Date(a.fromDate).getTime();
       const dateB = new Date(b.fromDate).getTime();
 
-      if (sortOption === 'most-recent') {
+      if (sortOption === SortOption.MostRecent) {
         return dateB - dateA
       } else {
         return dateA - dateB

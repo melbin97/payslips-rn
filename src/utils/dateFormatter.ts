@@ -12,12 +12,9 @@
  * @returns Formatted date range string
  */
 export function formatDateRange(fromDate: string, toDate: string): string {
-  const from = new Date(fromDate);
-  const to = new Date(toDate);
-
   // Format: "Jan 1, 2024 – Jan 31, 2024"
-  const fromFormatted = formatDate(from);
-  const toFormatted = formatDate(to);
+  const fromFormatted = formatDate(fromDate);
+  const toFormatted = formatDate(toDate);
 
   return `${fromFormatted} – ${toFormatted}`;
 }
